@@ -1,5 +1,5 @@
 export function isEmpty(value) {
-  if (typeof value == 'number') {
+  if (value === undefined) {
     return false
   }
   return value.trim() === ''
