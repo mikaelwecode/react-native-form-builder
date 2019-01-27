@@ -1,52 +1,52 @@
-import _ from 'lodash';
-import { isEmail, isEmpty } from './validators';
+import _ from 'lodash'
+import {isEmail, isEmpty} from './validators'
 
 export function getKeyboardType(textType) {
   switch (textType) {
     case 'email':
-      return 'email-address';
+      return 'email-address'
     case 'number':
-      return 'numeric';
+      return 'numeric'
     default:
-      return 'default';
+      return 'default'
   }
 }
 export function autoValidate(field) {
-  let error = false;
-  let errorMsg = '';
+  let error = false
+  let errorMsg = ''
   if (field.required) {
     switch (field.type) {
       case 'email':
         if (isEmpty(field.value)) {
-          error = true;
-          errorMsg = `${field.label} is required`;
+          error = true
+          errorMsg = `${field.label} måste fyllas i`
         } else if (!isEmail(field.value)) {
-          error = true;
-          errorMsg = 'Please enter a valid email';
+          error = true
+          errorMsg = 'Please enter a valid email'
         }
-        break;
+        break
       case 'text':
       case 'url':
       case 'password':
         if (isEmpty(field.value)) {
-          error = true;
-          errorMsg = `${field.label} is required`;
+          error = true
+          errorMsg = `${field.label} måste fyllas i`
         }
-        break;
+        break
       case 'number':
         if (field.type === 'number') {
-          if (isEmpty(field.value)) {
-            error = true;
-            errorMsg = `${field.label} is required`;
+          if (isEmpty(field?.value?.toString())) {
+            error = true
+            errorMsg = `${field.label} måste fyllas i`
           } else if (isNaN(field.value)) {
-            errorMsg = `${field.label} should be a number`;
+            errorMsg = `${field.label} måste vara ett nummer`
           }
         }
-        break;
+        break
       default:
     }
   }
-  return { error, errorMsg };
+  return {error, errorMsg}
 }
 export function getDefaultValue(field) {
   switch (field.type) {
@@ -55,56 +55,60 @@ export function getDefaultValue(field) {
     case 'email':
     case 'password':
     case 'url':
-      return field.defaultValue || '';
+      return field.defaultValue || ''
     case 'picker': {
-      if ((field.options).indexOf(field.defaultValue) !== -1) {
-        return field.defaultValue;
+      if (field.options.indexOf(field.defaultValue) !== -1) {
+        return field.defaultValue
       }
-      return field.options[0];
+      return field.options[0]
     }
     case 'select': {
       if (Array.isArray(field.defaultValue)) {
-        const selected = [];
+        const selected = []
         if (!field.objectType) {
           field.defaultValue.forEach((item) => {
-            if ((field.options).indexOf(item) !== -1) {
-              selected.push(item);
+            if (field.options.indexOf(item) !== -1) {
+              selected.push(item)
             }
-          });
+          })
         } else {
           field.defaultValue.forEach((item) => {
-            if ((field.options).findIndex(option =>
-                option[field.primaryKey] === item[field.primaryKey]
-              ) !== -1) {
-              selected.push(item);
+            if (
+              field.options.findIndex(
+                (option) => option[field.primaryKey] === item[field.primaryKey]
+              ) !== -1
+            ) {
+              selected.push(item)
             }
-          });
+          })
         }
-        return selected;
+        return selected
       }
       if (!field.multiple) {
-        return field.defaultValue || null;
+        return field.defaultValue || null
       }
-      return [];
+      return []
     }
     case 'switch':
       if (typeof field.defaultValue === 'boolean') {
-        return field.defaultValue;
+        return field.defaultValue
       }
-      return false;
-    case 'date':
-      { const dateDefaultValue = field.defaultValue && new Date(field.defaultValue);
-        if (dateDefaultValue && !_.isNaN(dateDefaultValue.getTime())) {
-          return dateDefaultValue;
-        }
-        return null; }
+      return false
+    case 'date': {
+      const dateDefaultValue =
+        field.defaultValue && new Date(field.defaultValue)
+      if (dateDefaultValue && !_.isNaN(dateDefaultValue.getTime())) {
+        return dateDefaultValue
+      }
+      return null
+    }
     case 'group':
       if (field.fields) {
-        return field.defaultValue;
+        return field.defaultValue
       }
-      return null;
+      return null
     default:
-      return null;
+      return null
   }
 }
 export function getResetValue(field) {
@@ -114,29 +118,29 @@ export function getResetValue(field) {
     case 'email':
     case 'password':
     case 'url':
-      return '';
+      return ''
     case 'picker':
-      return field.options[0];
+      return field.options[0]
     case 'select':
-      return field.multiple ? [] : null;
+      return field.multiple ? [] : null
     case 'switch':
-      return false;
+      return false
     case 'date':
-      return null;
+      return null
     default:
-      return null;
+      return null
   }
 }
 export function getInitState(fields) {
-  const state = {};
+  const state = {}
   _.forEach(fields, (field) => {
-    const fieldObj = field;
-    fieldObj.error = false;
-    fieldObj.errorMsg = '';
+    const fieldObj = field
+    fieldObj.error = false
+    fieldObj.errorMsg = ''
     if (!field.hidden && field.type) {
-      fieldObj.value = getDefaultValue(field);
-      state[field.name] = fieldObj;
+      fieldObj.value = getDefaultValue(field)
+      state[field.name] = fieldObj
     }
-  });
-  return state;
+  })
+  return state
 }
