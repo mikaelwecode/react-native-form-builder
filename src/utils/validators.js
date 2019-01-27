@@ -1,5 +1,8 @@
 export function isEmpty(value) {
-  return value.trim() === '';
+  if (typeof value == 'number') {
+    return false
+  }
+  return value.trim() === ''
 }
 export function isEmail(value) {
   const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
